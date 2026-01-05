@@ -37,68 +37,9 @@ The statusline shows: Model | Directory | Git Branch Status | Context Window Inf
 
 ## Installation
 
-### Quick Install (Recommended)
+### Download Pre-built Binaries
 
-Install via npm (works on all platforms):
-
-```bash
-# Install globally
-npm install -g @cometix/ccline
-
-# Or using yarn
-yarn global add @cometix/ccline
-
-# Or using pnpm
-pnpm add -g @cometix/ccline
-```
-
-Use npm mirror for faster download:
-```bash
-npm install -g @cometix/ccline --registry https://registry.npmmirror.com
-```
-
-After installation:
-- ✅ Global command `ccline` is available everywhere
-- ⚙️ Follow the configuration steps below to integrate with Claude Code
-- 🎨 Run `ccline -c` to open configuration panel for theme selection
-
-### Claude Code Configuration
-
-Add to your Claude Code `settings.json`:
-
-**Linux ARM64:**
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/ccline/ccline",
-    "padding": 0
-  }
-}
-```
-
-**Fallback (npm installation):**
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "ccline",
-    "padding": 0
-  }
-}
-```
-*Use this if npm global installation is available in PATH*
-
-### Update
-
-```bash
-npm update -g @cometix/ccline
-```
-
-<details>
-<summary>Manual Installation (Click to expand)</summary>
-
-Alternatively, download from [Releases](https://github.com/Haleclipse/CCometixLine/releases):
+Download the latest release from [Releases](https://github.com/Haleclipse/CCometixLine/releases):
 
 #### Linux ARM64
 
@@ -122,7 +63,19 @@ chmod +x ~/.claude/ccline/ccline
 ```
 *Works on any ARM64 Linux distribution (static, no dependencies)*
 
-</details>
+### Claude Code Configuration
+
+Add to your Claude Code `settings.json`:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/ccline/ccline",
+    "padding": 0
+  }
+}
+```
 
 ### Build from Source
 

@@ -37,68 +37,9 @@
 
 ## 安装
 
-### 快速安装（推荐）
+### 下载预编译二进制文件
 
-通过 npm 安装（适用于所有平台）：
-
-```bash
-# 全局安装
-npm install -g @cometix/ccline
-
-# 或使用 yarn
-yarn global add @cometix/ccline
-
-# 或使用 pnpm
-pnpm add -g @cometix/ccline
-```
-
-使用镜像源加速下载：
-```bash
-npm install -g @cometix/ccline --registry https://registry.npmmirror.com
-```
-
-安装后：
-- ✅ 全局命令 `ccline` 可在任何地方使用
-- ⚙️ 按照下方提示进行配置以集成到 Claude Code
-- 🎨 运行 `ccline -c` 打开配置面板进行主题选择
-
-### Claude Code 配置
-
-添加到 Claude Code `settings.json`：
-
-**Linux ARM64:**
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/ccline/ccline",
-    "padding": 0
-  }
-}
-```
-
-**后备方案 (npm 安装):**
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "ccline",
-    "padding": 0
-  }
-}
-```
-*如果 npm 全局安装已在 PATH 中可用，则使用此配置*
-
-### 更新
-
-```bash
-npm update -g @cometix/ccline
-```
-
-<details>
-<summary>手动安装（点击展开）</summary>
-
-或者从 [Releases](https://github.com/Haleclipse/CCometixLine/releases) 手动下载：
+从 [Releases](https://github.com/Haleclipse/CCometixLine/releases) 下载最新版本：
 
 #### Linux ARM64
 
@@ -122,7 +63,19 @@ chmod +x ~/.claude/ccline/ccline
 ```
 *适用于任何 ARM64 Linux 发行版（静态链接，无依赖）*
 
-</details>
+### Claude Code 配置
+
+添加到 Claude Code `settings.json`：
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/ccline/ccline",
+    "padding": 0
+  }
+}
+```
 
 ### 从源码构建
 
