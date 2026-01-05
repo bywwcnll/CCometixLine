@@ -12,19 +12,11 @@ permissions:
 
 jobs:
   build:
-    name: Build for ${{ matrix.target }}
-    runs-on: ${{ matrix.os }}
+    name: Build for Android ARM64
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          - target: aarch64-unknown-linux-gnu
-            os: ubuntu-latest
-            name: ccline-linux-arm64.tar.gz
-            use_cross: true
-          - target: aarch64-unknown-linux-musl
-            os: ubuntu-latest
-            name: ccline-linux-arm64-static.tar.gz
-            use_cross: true
           - target: aarch64-linux-android
             os: ubuntu-latest
             name: ccline-android-arm64.tar.gz
