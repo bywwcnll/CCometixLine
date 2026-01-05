@@ -1,0 +1,10 @@
+[target.aarch64-linux-android]
+linker = "aarch64-linux-android-clang"
+rustflags = [
+    "-C", "link-arg=-Wl,-z,max-page-size=16384",
+    "-C", "target-feature=+outline-atomics"
+]
+
+[build]
+# Uncomment to set Android as default target when building locally on Termux
+# target = "aarch64-linux-android"

@@ -25,6 +25,10 @@ jobs:
             os: ubuntu-latest
             name: ccline-linux-arm64-static.tar.gz
             use_cross: true
+          - target: aarch64-linux-android
+            os: ubuntu-latest
+            name: ccline-android-arm64.tar.gz
+            use_cross: true
 
     steps:
     - name: Checkout
