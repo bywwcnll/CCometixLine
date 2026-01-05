@@ -19,46 +19,56 @@ try {
   // Create directory
   fs.mkdirSync(claudeDir, { recursive: true });
 
-  // Determine platform key
-  let platformKey = `${platform}-${arch}`;
-  if (platform === 'linux') {
-    // Detect if static linking is needed based on glibc version
-    function shouldUseStaticBinary() {
-      try {
-        const { execSync } = require('child_process');
-        const lddOutput = execSync('ldd --version 2>/dev/null || echo ""', { 
-          encoding: 'utf8',
-          timeout: 1000 
-        });
-        
-        // Parse "ldd (GNU libc) 2.35" format
-        const match = lddOutput.match(/(?:GNU libc|GLIBC).*?(\d+)\.(\d+)/);
-        if (match) {
-          const major = parseInt(match[1]);
-          const minor = parseInt(match[2]);
-          // Use static binary if glibc < 2.35
-          return major < 2 || (major === 2 && minor < 35);
-        }
-      } catch (e) {
-        // If detection fails, default to dynamic binary
-        return false;
+  // Determine platform key - only support Linux ARM64
+  const platform = process.platform;
+  const arch = process.arch;
+
+  if (platform !== 'linux' || (arch !== 'arm64' && arch !== 'aarch64')) {
+    if (!silent) {
+      console.log(`❌ This package only supports Linux ARM64 architecture`);
+      console.log(`   Your platform: ${platform}-${arch}`);
+    }
+    process.exit(0);
+  }
+
+  let platformKey = `linux-${arch}`;
+
+  // Detect if static linking is needed based on glibc version
+  function shouldUseStaticBinary() {
+    try {
+      const { execSync } = require('child_process');
+      const lddOutput = execSync('ldd --version 2>/dev/null || echo ""', {
+        encoding: 'utf8',
+        timeout: 1000
+      });
+
+      // Parse "ldd (GNU libc) 2.35" format
+      const match = lddOutput.match(/(?:GNU libc|GLIBC).*?(\d+)\.(\d+)/);
+      if (match) {
+        const major = parseInt(match[1]);
+        const minor = parseInt(match[2]);
+        // Use static binary if glibc < 2.35
+        return major < 2 || (major === 2 && minor < 35);
       }
-      
+    } catch (e) {
+      // If detection fails, default to dynamic binary
       return false;
     }
-    
-    if (shouldUseStaticBinary()) {
-      platformKey = 'linux-x64-musl';
-    }
+
+    return false;
+  }
+
+  if (shouldUseStaticBinary()) {
+    platformKey = 'linux-arm64-musl';
+  } else if (arch === 'aarch64') {
+    platformKey = 'linux-arm64';
   }
 
   const packageMap = {
-    'darwin-x64': '@cometix/ccline-darwin-x64',
-    'darwin-arm64': '@cometix/ccline-darwin-arm64',
-    'linux-x64': '@cometix/ccline-linux-x64',
-    'linux-x64-musl': '@cometix/ccline-linux-x64-musl',
-    'win32-x64': '@cometix/ccline-win32-x64',
-    'win32-ia32': '@cometix/ccline-win32-x64', // Use 64-bit for 32-bit
+    'linux-arm64': '@cometix/ccline-linux-arm64',
+    'linux-aarch64': '@cometix/ccline-linux-arm64',
+    'linux-arm64-musl': '@cometix/ccline-linux-arm64-musl',
+    'linux-aarch64-musl': '@cometix/ccline-linux-arm64-musl'
   };
 
   const packageName = packageMap[platformKey];
@@ -69,7 +79,7 @@ try {
     process.exit(0);
   }
 
-  const binaryName = platform === 'win32' ? 'ccline.exe' : 'ccline';
+  const binaryName = 'ccline';
   const targetPath = path.join(claudeDir, binaryName);
 
   // Multiple path search strategies for different package managers
@@ -128,22 +138,16 @@ try {
     process.exit(0);
   }
 
-  // Copy or link the binary
-  if (platform === 'win32') {
-    // Windows: Copy file
-    fs.copyFileSync(sourcePath, targetPath);
-  } else {
-    // Unix: Try hard link first, fallback to copy
-    try {
-      if (fs.existsSync(targetPath)) {
-        fs.unlinkSync(targetPath);
-      }
-      fs.linkSync(sourcePath, targetPath);
-    } catch {
-      fs.copyFileSync(sourcePath, targetPath);
+  // Try hard link first, fallback to copy
+  try {
+    if (fs.existsSync(targetPath)) {
+      fs.unlinkSync(targetPath);
     }
-    fs.chmodSync(targetPath, '755');
+    fs.linkSync(sourcePath, targetPath);
+  } catch {
+    fs.copyFileSync(sourcePath, targetPath);
   }
+  fs.chmodSync(targetPath, '755');
 
   if (!silent) {
     console.log('✨ CCometixLine is ready for Claude Code!');

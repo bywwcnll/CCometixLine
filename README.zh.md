@@ -66,23 +66,12 @@ npm install -g @cometix/ccline --registry https://registry.npmmirror.com
 
 添加到 Claude Code `settings.json`：
 
-**Linux/macOS:**
+**Linux ARM64:**
 ```json
 {
   "statusLine": {
-    "type": "command", 
+    "type": "command",
     "command": "~/.claude/ccline/ccline",
-    "padding": 0
-  }
-}
-```
-
-**Windows:**
-```json
-{
-  "statusLine": {
-    "type": "command", 
-    "command": "%USERPROFILE%\\.claude\\ccline\\ccline.exe",
     "padding": 0
   }
 }
@@ -92,7 +81,7 @@ npm install -g @cometix/ccline --registry https://registry.npmmirror.com
 ```json
 {
   "statusLine": {
-    "type": "command", 
+    "type": "command",
     "command": "ccline",
     "padding": 0
   }
@@ -111,57 +100,27 @@ npm update -g @cometix/ccline
 
 或者从 [Releases](https://github.com/Haleclipse/CCometixLine/releases) 手动下载：
 
-#### Linux
+#### Linux ARM64
 
-#### 选项 1: 动态链接版本（推荐）
+**选项 1: 动态链接版本（推荐）**
 ```bash
 mkdir -p ~/.claude/ccline
-wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-linux-x64.tar.gz
-tar -xzf ccline-linux-x64.tar.gz
+wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-linux-arm64.tar.gz
+tar -xzf ccline-linux-arm64.tar.gz
 cp ccline ~/.claude/ccline/
 chmod +x ~/.claude/ccline/ccline
 ```
-*系统要求: Ubuntu 22.04+, CentOS 9+, Debian 11+, RHEL 9+ (glibc 2.35+)*
+*系统要求: Ubuntu 22.04+, Debian 11+ ARM64 (glibc 2.35+)*
 
-#### 选项 2: 静态链接版本（通用兼容）
+**选项 2: 静态链接版本（通用兼容）**
 ```bash
 mkdir -p ~/.claude/ccline
-wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-linux-x64-static.tar.gz
-tar -xzf ccline-linux-x64-static.tar.gz
+wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-linux-arm64-static.tar.gz
+tar -xzf ccline-linux-arm64-static.tar.gz
 cp ccline ~/.claude/ccline/
 chmod +x ~/.claude/ccline/ccline
 ```
-*适用于任何 Linux 发行版（静态链接，无依赖）*
-
-#### macOS (Intel)
-
-```bash  
-mkdir -p ~/.claude/ccline
-wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-macos-x64.tar.gz
-tar -xzf ccline-macos-x64.tar.gz
-cp ccline ~/.claude/ccline/
-chmod +x ~/.claude/ccline/ccline
-```
-
-#### macOS (Apple Silicon)
-
-```bash
-mkdir -p ~/.claude/ccline  
-wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-macos-arm64.tar.gz
-tar -xzf ccline-macos-arm64.tar.gz
-cp ccline ~/.claude/ccline/
-chmod +x ~/.claude/ccline/ccline
-```
-
-#### Windows
-
-```powershell
-# 创建目录并下载
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\ccline"
-Invoke-WebRequest -Uri "https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-windows-x64.zip" -OutFile "ccline-windows-x64.zip"
-Expand-Archive -Path "ccline-windows-x64.zip" -DestinationPath "."
-Move-Item "ccline.exe" "$env:USERPROFILE\.claude\ccline\"
-```
+*适用于任何 ARM64 Linux 发行版（静态链接，无依赖）*
 
 </details>
 
@@ -171,7 +130,11 @@ Move-Item "ccline.exe" "$env:USERPROFILE\.claude\ccline\"
 git clone https://github.com/Haleclipse/CCometixLine.git
 cd CCometixLine
 cargo build --release
+
+# 安装到 Claude Code 目录
+mkdir -p ~/.claude/ccline
 cp target/release/ccometixline ~/.claude/ccline/ccline
+chmod +x ~/.claude/ccline/ccline
 ```
 
 ## 使用

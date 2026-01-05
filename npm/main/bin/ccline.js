@@ -6,10 +6,10 @@ const os = require('os');
 
 // 1. Priority: Use ~/.claude/ccline/ccline if exists
 const claudePath = path.join(
-  os.homedir(), 
-  '.claude', 
+  os.homedir(),
+  '.claude',
   'ccline',
-  process.platform === 'win32' ? 'ccline.exe' : 'ccline'
+  'ccline'
 );
 
 if (fs.existsSync(claudePath)) {
@@ -24,62 +24,68 @@ if (fs.existsSync(claudePath)) {
 const platform = process.platform;
 const arch = process.arch;
 
-// Handle special cases
-let platformKey = `${platform}-${arch}`;
-if (platform === 'linux') {
-  // Detect if static linking is needed based on glibc version
-  function shouldUseStaticBinary() {
-    try {
-      const { execSync } = require('child_process');
-      const lddOutput = execSync('ldd --version 2>/dev/null || echo ""', { 
-        encoding: 'utf8',
-        timeout: 1000 
-      });
-      
-      // Parse "ldd (GNU libc) 2.35" format
-      const match = lddOutput.match(/(?:GNU libc|GLIBC).*?(\d+)\.(\d+)/);
-      if (match) {
-        const major = parseInt(match[1]);
-        const minor = parseInt(match[2]);
-        // Use static binary if glibc < 2.35
-        return major < 2 || (major === 2 && minor < 35);
-      }
-    } catch (e) {
-      // If detection fails, default to dynamic binary
-      return false;
+// Only support Linux ARM64
+if (platform !== 'linux' || (arch !== 'arm64' && arch !== 'aarch64')) {
+  console.error(`Error: This package only supports Linux ARM64 architecture`);
+  console.error(`Your platform: ${platform}-${arch}`);
+  console.error('Please visit https://github.com/Haleclipse/CCometixLine for more information');
+  process.exit(1);
+}
+
+let platformKey = `linux-${arch}`;
+
+// Detect if static linking is needed based on glibc version
+function shouldUseStaticBinary() {
+  try {
+    const { execSync } = require('child_process');
+    const lddOutput = execSync('ldd --version 2>/dev/null || echo ""', {
+      encoding: 'utf8',
+      timeout: 1000
+    });
+
+    // Parse "ldd (GNU libc) 2.35" format
+    const match = lddOutput.match(/(?:GNU libc|GLIBC).*?(\d+)\.(\d+)/);
+    if (match) {
+      const major = parseInt(match[1]);
+      const minor = parseInt(match[2]);
+      // Use static binary if glibc < 2.35
+      return major < 2 || (major === 2 && minor < 35);
     }
-    
+  } catch (e) {
+    // If detection fails, default to dynamic binary
     return false;
   }
-  
-  if (shouldUseStaticBinary()) {
-    platformKey = 'linux-x64-musl';
-  }
+
+  return false;
+}
+
+if (shouldUseStaticBinary()) {
+  platformKey = 'linux-arm64-musl';
+} else if (arch === 'aarch64') {
+  platformKey = 'linux-arm64';
 }
 
 const packageMap = {
-  'darwin-x64': '@cometix/ccline-darwin-x64',
-  'darwin-arm64': '@cometix/ccline-darwin-arm64',
-  'linux-x64': '@cometix/ccline-linux-x64',
-  'linux-x64-musl': '@cometix/ccline-linux-x64-musl',
-  'win32-x64': '@cometix/ccline-win32-x64',
-  'win32-ia32': '@cometix/ccline-win32-x64', // Use 64-bit for 32-bit systems
+  'linux-arm64': '@cometix/ccline-linux-arm64',
+  'linux-aarch64': '@cometix/ccline-linux-arm64',
+  'linux-arm64-musl': '@cometix/ccline-linux-arm64-musl',
+  'linux-aarch64-musl': '@cometix/ccline-linux-arm64-musl'
 };
 
 const packageName = packageMap[platformKey];
 if (!packageName) {
   console.error(`Error: Unsupported platform ${platformKey}`);
-  console.error('Supported platforms: darwin (x64/arm64), linux (x64), win32 (x64)');
-  console.error('Please visit https://github.com/Haleclipse/CCometixLine for manual installation');
+  console.error('This package only supports Linux ARM64');
+  console.error('Please visit https://github.com/Haleclipse/CCometixLine for more information');
   process.exit(1);
 }
 
-const binaryName = platform === 'win32' ? 'ccline.exe' : 'ccline';
+const binaryName = 'ccline';
 const binaryPath = path.join(__dirname, '..', 'node_modules', packageName, binaryName);
 
 if (!fs.existsSync(binaryPath)) {
   console.error(`Error: Binary not found at ${binaryPath}`);
-  console.error('This might indicate a failed installation or unsupported platform.');
+  console.error('This might indicate a failed installation.');
   console.error('Please try reinstalling: npm install -g @cometix/ccline');
   console.error(`Expected package: ${packageName}`);
   process.exit(1);

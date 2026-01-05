@@ -66,23 +66,12 @@ After installation:
 
 Add to your Claude Code `settings.json`:
 
-**Linux/macOS:**
+**Linux ARM64:**
 ```json
 {
   "statusLine": {
-    "type": "command", 
+    "type": "command",
     "command": "~/.claude/ccline/ccline",
-    "padding": 0
-  }
-}
-```
-
-**Windows:**
-```json
-{
-  "statusLine": {
-    "type": "command", 
-    "command": "%USERPROFILE%\\.claude\\ccline\\ccline.exe",
     "padding": 0
   }
 }
@@ -92,7 +81,7 @@ Add to your Claude Code `settings.json`:
 ```json
 {
   "statusLine": {
-    "type": "command", 
+    "type": "command",
     "command": "ccline",
     "padding": 0
   }
@@ -111,57 +100,27 @@ npm update -g @cometix/ccline
 
 Alternatively, download from [Releases](https://github.com/Haleclipse/CCometixLine/releases):
 
-#### Linux
+#### Linux ARM64
 
-#### Option 1: Dynamic Binary (Recommended)
+**Option 1: Dynamic Binary (Recommended)**
 ```bash
 mkdir -p ~/.claude/ccline
-wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-linux-x64.tar.gz
-tar -xzf ccline-linux-x64.tar.gz
+wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-linux-arm64.tar.gz
+tar -xzf ccline-linux-arm64.tar.gz
 cp ccline ~/.claude/ccline/
 chmod +x ~/.claude/ccline/ccline
 ```
-*Requires: Ubuntu 22.04+, CentOS 9+, Debian 11+, RHEL 9+ (glibc 2.35+)*
+*Requires: Ubuntu 22.04+, Debian 11+ ARM64 (glibc 2.35+)*
 
-#### Option 2: Static Binary (Universal Compatibility)
+**Option 2: Static Binary (Universal Compatibility)**
 ```bash
 mkdir -p ~/.claude/ccline
-wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-linux-x64-static.tar.gz
-tar -xzf ccline-linux-x64-static.tar.gz
+wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-linux-arm64-static.tar.gz
+tar -xzf ccline-linux-arm64-static.tar.gz
 cp ccline ~/.claude/ccline/
 chmod +x ~/.claude/ccline/ccline
 ```
-*Works on any Linux distribution (static, no dependencies)*
-
-#### macOS (Intel)
-
-```bash  
-mkdir -p ~/.claude/ccline
-wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-macos-x64.tar.gz
-tar -xzf ccline-macos-x64.tar.gz
-cp ccline ~/.claude/ccline/
-chmod +x ~/.claude/ccline/ccline
-```
-
-#### macOS (Apple Silicon)
-
-```bash
-mkdir -p ~/.claude/ccline  
-wget https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-macos-arm64.tar.gz
-tar -xzf ccline-macos-arm64.tar.gz
-cp ccline ~/.claude/ccline/
-chmod +x ~/.claude/ccline/ccline
-```
-
-#### Windows
-
-```powershell
-# Create directory and download
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\ccline"
-Invoke-WebRequest -Uri "https://github.com/Haleclipse/CCometixLine/releases/latest/download/ccline-windows-x64.zip" -OutFile "ccline-windows-x64.zip"
-Expand-Archive -Path "ccline-windows-x64.zip" -DestinationPath "."
-Move-Item "ccline.exe" "$env:USERPROFILE\.claude\ccline\"
-```
+*Works on any ARM64 Linux distribution (static, no dependencies)*
 
 </details>
 
@@ -172,14 +131,10 @@ git clone https://github.com/Haleclipse/CCometixLine.git
 cd CCometixLine
 cargo build --release
 
-# Linux/macOS
+# Install to Claude Code directory
 mkdir -p ~/.claude/ccline
 cp target/release/ccometixline ~/.claude/ccline/ccline
 chmod +x ~/.claude/ccline/ccline
-
-# Windows (PowerShell)
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\ccline"
-copy target\release\ccometixline.exe "$env:USERPROFILE\.claude\ccline\ccline.exe"
 ```
 
 ## Usage
